@@ -35,12 +35,15 @@ if (!mysqli_set_charset($conn, "utf8")) {
 // create empty variable to be filled with export data
 $csv_export = '';
 $query_line = "SELECT 
-oc_product.product_id, model, quantity, image, oc_product.price, shipping, 
-name, description, 
-oc_product_special.price, oc_product_special.date_start, oc_product_special.date_end 
+oc_product.product_id, model, oc_product.quantity, image, oc_product.price as MSRP, shipping, 
+name, description,
+oc_product_discount.price as bulk_price,  
+oc_product_special.price as discount_price, oc_product_special.date_start as discount_date_start, oc_product_special.date_end as discount_date_end 
 FROM oc_product
 LEFT OUTER JOIN oc_product_description
-ON oc_product.product_id = oc_product_description.product_id 
+ON oc_product.product_id = oc_product_description.product_id
+LEFT JOIN oc_product_discount
+ON oc_product.product_id = oc_product_discount.product_id
 LEFT OUTER JOIN oc_product_special
 ON oc_product.product_id = oc_product_special.product_id
 WHERE oc_product.quantity > 30
